@@ -1,35 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { axios } from "axios";
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [input, setInput] = useState("");
+  const [users, setUsers] = useState([]);
 
-  function handleTask(e) {
-    e.preventDefault();
-    if (input !== "") {
-      setTasks([...tasks, input]);
-      setInput("");
+  useEffect(() => {
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((res) => res.json())
+      .then((res) => setUsers(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+  /*
+useEffect(() => {
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get(
+        "https://jsonplaceholder.typicode.com/users"
+      );
+      setUsers(res.data);
+    } catch (error) {
+      console.error(error.message);
     }
-  }
-  function handleChange(e) {
-    e.preventDefault();
-    setInput(e.target.value);
-  }
+  };
 
+  fetchUsers();
+}, []);
+
+  */
   return (
     <div>
-      <input
-        type="text"
-        name="task"
-        value={input}
-        placeholder="Enter task name"
-        onChange={handleChange}
-      />
-      <button onClick={handleTask}>create Task</button>
-
       <ul>
-        {tasks.map((task, index) => (
-          <li key={index}>{task}</li>
+        {users.map((user) => (
+          <li key={user.id}>{user.name}</li>
         ))}
       </ul>
     </div>
